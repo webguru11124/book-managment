@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from sqlalchemy.orm import Session
 
-from ..crud.user_crud import get_user, create_user, get_users
-from ..models.user import User as UserModel
-from ..schemas.user_schemas import User, UserCreate
+from ..crud.author_crud import get_author,  get_authors
+from ..models.index import Author as AuthorModel
+from ..schemas.author_schemas import Author, AuthorCreate
 from ..db.session import SessionLocal  # Make sure to have this file in your project
 
 router = APIRouter()
@@ -16,19 +16,19 @@ def get_db():
     finally:
         db.close()
 
-@router.get("/users/", response_model=List[User])
-def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    users = get_users(db, skip=skip, limit=limit)
-    return users
+@router.get("/authors/", response_model=List[Author])
+def read_authors(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    authors = get_authors(db, skip=skip, limit=limit)
+    return authors
 
-@router.get("/users/{user_id}", response_model=User)
-def read_user(user_id: int, db: Session = Depends(get_db)):
-    db_user = get_user(db, user_id=user_id)
-    if db_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return db_user
+@router.get("/authors/{author_id}", response_model=Author)
+def author(author_id: int, db: Session = Depends(get_db)):
+    author = author(db, author_id=author_id)
+    if author is None:
+        raise HTTPException(status_code=404, detail="author not found")
+    return author
 
-@router.post("/users/", response_model=User)
-def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = create_user(db=db, user=user)
-    return db_user
+@router.post("/authors/", response_model=Author)
+def author(author: AuthorCreate, db: Session = Depends(get_db)):
+    author = author(db=db, author=author)
+    return author

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from ..models.book import Book
+from ..models.index import Book
 from ..schemas.book_schemas import BookCreate
 
 def get_books(db: Session, skip: int = 0, limit: int = 100):

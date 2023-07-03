@@ -1,0 +1,10 @@
+sudo /usr/pgadmin4/bin/setup-web.sh
+sudo systemctl start pgadmin4
+http://localhost/pgadmin4
+
+uvicorn app.main:app --port 8100 --reload
+
+alembic revision --autogenerate -m "initial migration"
+
+alembic upgrade head
+

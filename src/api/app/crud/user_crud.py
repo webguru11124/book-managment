@@ -1,16 +1,45 @@
 from sqlalchemy.orm import Session
-from ..models.user import User
-from ..schemas.user_schemas import UserCreate
+from ..models.index import User
+from db.session import SessionLocal 
 
-def get_user(db: Session, user_id: int):
-    return db.query(User).filter(User.id == user_id).first()
+def create_user(name: str, password: str):
+    # Create a session
+    session = SessionLocal()
 
-def get_users(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(User).offset(skip).limit(limit).all()
+    try:
+        # Create a new User object
+        new_user = User(name=name, password=password)
 
-def create_user(db: Session, user: UserCreate):
-    db_user = User(name=user.name)
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
+        # Add the new user to the session
+        session.add(new_user)
+
+        # Commit the changes
+        session.commit()
+    except:
+        # Rollback the changes in case of an error
+        session.rollback()
+        raise
+    finally:
+        # Close the session
+        session.close()
+
+def delete_all_rows():
+    # Create a session
+    session = SessionLocal()
+
+    try:
+        # Get the table's model class
+        table_model = session.metadata.tables["users"]
+        
+        # Delete all rows from the table
+        session.execute(table_model.delete())
+
+        # Commit the changes
+        session.commit()
+    except:
+        # Rollback the changes in case of an error
+        session.rollback()
+        raise
+    finally:
+        # Close the session
+        session.close()

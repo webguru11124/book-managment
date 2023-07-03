@@ -3,7 +3,7 @@ from typing import List
 from sqlalchemy.orm import Session
 
 from ..crud.book_crud import get_books, create_user_book
-from ..models.book import Book as BookModel
+from ..models.index import Book as BookModel
 from ..schemas.book_schemas import Book, BookCreate
 from ..db.session import SessionLocal  # Make sure to have this file in your project
 
