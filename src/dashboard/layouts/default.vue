@@ -26,6 +26,8 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import NotificationPopup from "~/components/common/partials/NotificationPopup";
+
+
 export default {
     components: {
         NotificationPopup,

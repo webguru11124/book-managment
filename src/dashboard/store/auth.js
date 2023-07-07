@@ -1,7 +1,8 @@
-import { Api } from "~/api";
-import { apiSearch, getUserInfoUrl } from "~/api/cloud.axios";
+
 import { getStoreItem, setStoreItem } from "~/services/localstorage.service";
 
+import Api, { apiSearch, loginUrl } from "~/api";
+import { LOCALSTORAGE_KEYS } from "~/utils/data/constants";
 export const SET_AUTH = "SET_AUTH";
 export const REMOVE_AUTH = "REMOVE_AUTH";
 
@@ -10,7 +11,6 @@ export function state() {
         auth: getStoreItem("auth") ?? null,
     };
 }
-
 export const getters = {
     auth: (state) => {
         return state.auth;
@@ -21,6 +21,19 @@ export const getters = {
 };
 
 export const actions = {
+    loginAction: ({ commit }, credentials) => {
+        const { username, password } = credentials;
+        const res = Api.post(`${apiSearch}${loginUrl}`, { username, password });
+
+        res.then(({ data }) => {
+            commit(SET_AUTH, { ...data.message, username });
+
+        })
+            .catch((error) => {
+                console.log(error);
+            })
+        return res;
+    },
     setAuth: function ({ commit }, payload) {
         commit(SET_AUTH, payload);
     },
@@ -28,13 +41,6 @@ export const actions = {
         commit(REMOVE_AUTH, payload);
     },
 
-    getUserInfo: function ({ commit, state }, payload) {
-        Api.post(`${apiSearch}${getUserInfoUrl}`).then(({ data }) => {
-            const { first_name, last_name, email } = data.message;
-            const authData = { ...state.auth, first_name, last_name, email };
-            commit(SET_AUTH, authData);
-        });
-    },
 };
 
 export const mutations = {

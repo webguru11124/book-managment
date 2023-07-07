@@ -16,6 +16,9 @@
 </template>
   
 <script>
+export default {
+    name: "userNotify",
+};
 </script>
   
 <style lang="scss">

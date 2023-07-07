@@ -25,13 +25,15 @@ export default {
 
     // Global CSS: https://go.nuxtjs.dev/config-css
     css: [
+        '@fortawesome/fontawesome-svg-core/styles.css',
         'bootstrap/dist/css/bootstrap.css',
         'bootstrap-vue/dist/bootstrap-vue.css'],
 
     // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
     plugins: [
-        { src: '~/plugins/bootstrap-vue.js', mode: 'client' },
-        { src: "~/plugins/vue-notification.js", mode: 'client', ssr: false },
+        '~/plugins/fontawesome.js',
+        '~/plugins/bootstrap-vue.js',
+        "~/plugins/vue-notification.js",
     ],
 
     // Auto import components: https://go.nuxtjs.dev/config-components
@@ -49,50 +51,31 @@ export default {
     modules: [
         '@nuxtjs/axios',
         '@nuxtjs/proxy',
-        // https://go.nuxtjs.dev/bootstrap
         'bootstrap-vue/nuxt',
-        // https://go.nuxtjs.dev/axios
     ],
     serverMiddleware: [
-        // ...
         { path: '/api', handler: '~/server/middleware/cors.js' },
-        // ...
     ],
 
-    // routes: { '/': { prerender: true }, '/*': { cors: true } },
     router: {
         middleware: ['auth'],
     },
     // Axios module configuration: https://go.nuxtjs.dev/config-axios
     axios: {
-        // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
         baseURL: process.env.NODE_ENV == 'development' ? 'http://127.0.0.1:8100' : process.env.BASEURL,
-        // baseURL: '<%= options.publicRuntimeConfig.axios.baseURL %>',
-        // proxy: true, // Enable proxying,
 
-        // proxyHeaders: false,
-        // credentials: false
     },
-    // routeRules: {
-    //     '/api/**': {
-    //         proxy: { to: "http://127.0.0.1:8100/api/**", },
-    //     }
-    // },
 
-    // proxy: {
-    //     '/api': {
-    //         target: 'https://127.0.0.1:8100', // Specify the target URL of your API server
-    //         pathRewrite: {
-    //             '^/api': '',
-    //         },
-    //     },
-    // },
 
-    // Build Configuration: https://go.nuxtjs.dev/config-build
-
-    build: {},
+    build: {
+    },
     env: {
         API_URL:
             process.env.API_URL || '/api',
-    }
+    },
+    ssr: false,
+    loading: false,
+    loadingIndicator: false,
+
+    pageTransition: "page",
 };

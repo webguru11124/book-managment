@@ -5,12 +5,14 @@ from sqlalchemy.ext.declarative import declarative_base
 from pydantic import BaseModel
 Base = declarative_base()
 
+
 class Author(Base):
     __tablename__ = "authors"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, index=True)
     books = relationship("Book", back_populates="owner")
+
 
 class Book(Base):
     __tablename__ = "books"

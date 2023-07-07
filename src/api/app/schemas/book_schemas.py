@@ -1,11 +1,14 @@
 from pydantic import BaseModel
 
+
 class BookBase(BaseModel):
     name: str
     pages: int
 
+
 class BookCreate(BookBase):
     pass
+
 
 class Book(BookBase):
     id: int
@@ -13,3 +16,7 @@ class Book(BookBase):
 
     class Config:
         orm_mode = True
+
+
+class BookUpdate(Book):
+    pass
