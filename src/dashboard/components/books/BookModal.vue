@@ -66,6 +66,9 @@ export default {
                 this.updateBook(this.editedBook);
             } else if (this.modalState === MODAL_STATE.SHOWN_CREATE) {
                 this.createBook(this.editedBook);
+                this.editedBook.name = '';
+                this.editedBook.id = null;
+                this.editedBook.pages = null;
             }
             this.hideModal();
         },

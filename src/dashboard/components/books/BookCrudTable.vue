@@ -16,7 +16,7 @@
             </b-form-group>
         </b-form>
 
-        <b-table striped hover :items="books" :fields="tableFields">
+        <b-table striped hover :items="books" :fields="tableFields" :per-page="perPage" :current-page="currentPage">
             <template #cell(actions)="row">
                 <div v-if="!row.item.editMode">
                     <b-button @click="toggleEditMode(row.item)" variant="info" size="sm">Edit</b-button>
@@ -46,6 +46,10 @@
                 </template>
             </template>
         </b-table>
+
+        <div class="mt-3">
+            <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" align="center"></b-pagination>
+        </div>
     </div>
 </template>
 <script>
@@ -54,6 +58,8 @@ export default {
     name: "book-crud-table",
     data() {
         return {
+            perPage: 4,
+            currentPage: 1,
             newBook: { name: "", id: null, pages: null },
             tableFields: [
                 { key: 'name', label: 'Name' },
@@ -92,6 +98,7 @@ export default {
         addBook() {
             const newBook = { name: this.newBook.name, pages: this.newBook.pages, owner_id: this.selected }
             this.createBook(newBook);
+
             this.books.unshift(newBook);
             this.newBook = { name: "", pages: null, owner_id: null };
         },
@@ -107,9 +114,9 @@ export default {
                 ...book, editMode: false, editName: book.name, editPages: book.pages
             }));
         },
-        perPage() {
-            return 10; // Number of books per page in the table
-        },
+        rows() {
+            return this.books.length;
+        }
     },
     mounted() {
         this.fetchBooks();

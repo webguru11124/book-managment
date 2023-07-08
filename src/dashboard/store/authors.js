@@ -47,7 +47,7 @@ export const mutations = {
         state.authors = authors;
     },
     [ADD_AUTHOR](state, author) {
-        state.authors.push(author);
+        state.authors.unshift(author);
     },
     [EDIT_AUTHOR](state, updatedAuthor) {
         const index = state.authors.findIndex((author) => author.id === updatedAuthor.id);

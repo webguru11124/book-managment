@@ -8,12 +8,12 @@
                 </b-input-group>
             </b-form-group>
         </b-form>
-        <book-crud-table></book-crud-table>
+        <book-crud-table v-if="selected"></book-crud-table>
     </b-modal>
 </template>
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import BookCrudTable from '~/components/authors/BookCrudTable'
+import BookCrudTable from '~/components/books/BookCrudTable'
 import { MODAL_STATE } from "~/utils/data/constants";
 export default {
     components: {

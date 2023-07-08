@@ -4,9 +4,9 @@
         <template slot="body" slot-scope="props">
             <div :class="`minipopup-box`">
                 <div :class="`d-flex align-items-center`">
-                    <!-- <font-awesome-icon v-if="props.item.type === 'danger'" icon="exclamation-triangle"
+                    <font-awesome-icon v-if="props.item.type === 'danger'" icon="exclamation-triangle"
                         class="mr-2 text-danger"></font-awesome-icon>
-                    <font-awesome-icon v-else icon="info-circle" class="mr-2 text-info"></font-awesome-icon> -->
+                    <font-awesome-icon v-else icon="info-circle" class="mr-2 text-info"></font-awesome-icon>
                     <div :class="`h5 mb-0 text-${props.item.type}`">{{ props.item.text }}</div>
                 </div>
             </div>
