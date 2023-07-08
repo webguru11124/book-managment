@@ -19,5 +19,5 @@ class Author(AuthorBase):
         orm_mode = True
 
 
-class AuthorUpdate(Author):
+class AuthorUpdate(BaseModel):
     name: str

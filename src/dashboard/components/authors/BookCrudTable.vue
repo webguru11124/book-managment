@@ -16,37 +16,36 @@
             </b-form-group>
         </b-form>
 
-        <b-table-simple class="striped bordered responsive">
-            <b-thead>
-                <b-tr>
-                    <b-th>Name</b-th>
-                    <b-th>Number of Pages</b-th>
-                    <b-th>Edit/Del</b-th>
-                </b-tr>
-            </b-thead>
-            <b-tbody>
-                <b-tr v-for="(book, index) in books" :key="index">
-                    <b-td>
-                        <input v-if="book.edit" type="text" v-model="book.name" class="form-control"
-                            v-on:keyup.enter="book.edit = !book.edit">
-                        <span v-else>{{ book.name }}</span>
-                    </b-td>
-                    <b-td>
-                        <input v-if="book.edit" type="text" v-model="book.pages" class="form-control"
-                            v-on:keyup.enter="book.edit = !book.edit">
-                        <span v-else>{{ book.pages }}</span>
-                    </b-td>
-                    <b-td>
-                        <b-button @click="book.edit = !book.edit" variant="info">
-                            <font-awesome-icon :icon="['fas', 'pencil-alt']" />
-                        </b-button>
-                        <b-button @click="removeBook(book.id)" variant="danger">
-                            <font-awesome-icon :icon="['fas', 'trash-alt']" />
-                        </b-button>
-                    </b-td>
-                </b-tr>
-            </b-tbody>
-        </b-table-simple>
+        <b-table striped hover :items="books" :fields="tableFields">
+            <template #cell(actions)="row">
+                <div v-if="!row.item.editMode">
+                    <b-button @click="toggleEditMode(row.item)" variant="info" size="sm">Edit</b-button>
+                    <b-button @click="removeBook(row.item)" variant="danger" size="sm">Remove</b-button>
+                </div>
+
+                <div v-else>
+                    <b-button @click="saveChanges(row.item)" variant="success" size="sm">Save</b-button>
+                    <b-button @click="cancelEdit(row.item)" variant="secondary" size="sm">Cancel</b-button>
+                </div>
+            </template>
+            <template #cell(name)="row">
+                <template v-if="!row.item.editMode">
+                    {{ row.item.name }}
+                </template>
+                <template v-else>
+                    <b-form-input v-model="row.item.editName" />
+                </template>
+            </template>
+
+            <template #cell(pages)="row">
+                <template v-if="!row.item.editMode">
+                    {{ row.item.pages }}
+                </template>
+                <template v-else>
+                    <b-form-input v-model="row.item.editPages" type="number" />
+                </template>
+            </template>
+        </b-table>
     </div>
 </template>
 <script>
@@ -55,35 +54,66 @@ export default {
     name: "book-crud-table",
     data() {
         return {
-            newBook: { name: "", id: null, pages: null, owner_id: null },
+            newBook: { name: "", id: null, pages: null },
+            tableFields: [
+                { key: 'name', label: 'Name' },
+                { key: 'pages', label: 'Number of Pages' },
+                { key: 'actions', label: 'Actions' }
+            ]
         };
     },
     methods: {
         ...mapActions('books', {
+            fetchBooks: 'fetchBooks',
             createBook: 'addBook',
             updateBook: 'editBook',
             deleteBook: 'deleteBook',
         }),
+        toggleEditMode(book) {
+            book.editMode = !book.editMode;
+        },
+        saveChanges(book) {
+            const newBook = {
+                id: book.id,
+                name: book.editName,
+                pages: book.editPages,
+                owner_id: book.owner_id,
+            };
+            this.updateBook(newBook);
+            book.name = newBook.name;
+            book.pages = newBook.pages;
+            book.editMode = false;
+        },
+        cancelEdit(book) {
+            book.editMode = false;
+            book.editName = book.name;
+            book.editPages = book.pages;
+        },
         addBook() {
-            this.createBook({ name: this.newBook.name, pages: this.newBook.pages, owner_id: this.selected });
+            const newBook = { name: this.newBook.name, pages: this.newBook.pages, owner_id: this.selected }
+            this.createBook(newBook);
+            this.books.unshift(newBook);
             this.newBook = { name: "", pages: null, owner_id: null };
         },
-        removeBook(id) {
-            this.removeBook(id);
+        removeBook(book) {
+            this.deleteBook(book.id);
         },
     },
     computed: {
         ...mapState('selection', ['selected']),
-        ...mapState('authors', ['authors']),
+        ...mapState('books', { originalBooks: 'books' }),
         books() {
-            return (this.authors.find(author => author.id === this.selected)?.books ?? []).map(book => ({
-                ...book, edit: true,
+            return this.originalBooks.filter(book => book.owner_id === this.selected).map(book => ({
+                ...book, editMode: false, editName: book.name, editPages: book.pages
             }));
         },
         perPage() {
             return 10; // Number of books per page in the table
         },
     },
+    mounted() {
+        this.fetchBooks();
+    }
 
 };
 </script>
