@@ -1,4 +1,7 @@
 
+![Alt Text](https://github.com/webguru11124/developer-full-stack-challenge/blob/main/full-stack.gif)
+
+
 # scripts
 
 ## postgresql
@@ -26,6 +29,7 @@ sudo systemctl start pgadmin4
 on browser, http://localhost/pgadmin4
 
 ```
+basic migration but follow the above step to make migration.
 
 CREATE TABLE "users" ( id SERIAL PRIMARY KEY,  name VARCHAR(100), books  INTEGER[] );
 CREATE TABLE "books" ( id SERIAL PRIMARY KEY,  name VARCHAR(100), owner_id VARCHAR(100), page_size  INTEGER );
