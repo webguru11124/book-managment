@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+        <h1>Authors</h1>
         <author-table></author-table>
         <author-modal></author-modal>
     </div>

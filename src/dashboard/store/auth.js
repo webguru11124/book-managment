@@ -2,7 +2,6 @@
 import { getStoreItem, setStoreItem } from "~/services/localstorage.service";
 
 import Api, { apiSearch, loginUrl } from "~/api";
-import { LOCALSTORAGE_KEYS } from "~/utils/data/constants";
 export const SET_AUTH = "SET_AUTH";
 export const REMOVE_AUTH = "REMOVE_AUTH";
 

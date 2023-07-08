@@ -34,8 +34,8 @@ export const actions = {
     async editAuthor({ commit }, updatedAuthor) {
         try {
             // Make API request to edit author
-            await Api.put(`${apiSearch}/authors/${updatedAuthor.id}`, { id: updatedAuthor.id, name: updatedAuthor.name });
-            commit(EDIT_AUTHOR, updatedAuthor);
+            const respone = await Api.put(`${apiSearch}/authors/${updatedAuthor.id}`, { id: updatedAuthor.id, name: updatedAuthor.name });
+            commit(EDIT_AUTHOR, respone.data);
         } catch (error) {
             console.error("Error editing author:", error);
         }

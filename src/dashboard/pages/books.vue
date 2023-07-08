@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+        <h1>Books </h1>
         <book-table></book-table>
         <book-modal></book-modal>
     </div>

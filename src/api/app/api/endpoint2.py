@@ -22,7 +22,6 @@ def get_db():
 @router.get("/books/", response_model=List[Book])
 def read_books(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     books = get_books(db, skip=skip, limit=limit)
-    print(books)
     return books
 
 

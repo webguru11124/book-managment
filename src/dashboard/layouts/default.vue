@@ -17,8 +17,9 @@
                 </b-navbar-nav>
             </b-collapse>
         </b-navbar>
-
-        <nuxt />
+        <div class="mt-5">
+            <nuxt />
+        </div>
         <notification-popup class="minipopup-area"></notification-popup>
     </div>
 </template>

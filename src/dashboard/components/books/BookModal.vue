@@ -1,7 +1,7 @@
 <template>
     <!-- Add/edit book modal -->
-    <b-modal v-model="isModalShown" :title="modalTitle" class="text-center" @ok="saveBook">
-        <b-form @submit.prevent>
+    <b-modal id="BookModal" :title="modalTitle" class="text-center" @ok="saveBook">
+        <b-form ref="bookForm" @submit.prevent="saveBook">
             <b-form-group label="Name" label-for="book-name">
                 <b-form-input id="book-name" v-model="editedBook.name" required></b-form-input>
             </b-form-group>
@@ -16,7 +16,7 @@
 </template>
 <script>
 
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import TreeSelect from "~/components/common/partials/TreeSelect";
 import { MODAL_STATE } from "~/utils/data/constants";
 
@@ -30,20 +30,38 @@ export default {
             editedBook: { id: null, name: '', pages: null, owner_id: null },
         };
     },
+
     watch: {
-        selection(newSelection) {
-            this.editedBook = this.books[newSelection];
+        isShown(newShown,) {
+            if (newShown) {
+                this.$bvModal.show('BookModal');
+            }
+            else this.$bvModal.hide('BookModal');
+        },
+        selected(newSelection) {
+            this.editedBook = { ...this.books.find(book => book.id === newSelection) };
+        },
+        authors: {
+            immediate: true,
+            handler(newAuthors) {
+                if (newAuthors.length > 0 && this.editedBook.owner_id === null) {
+                    this.setInitialOwnerId();
+                }
+            }
         }
     },
     methods: {
+
         ...mapActions('authors', ['fetchAuthors']),
         ...mapActions('books', {
             createBook: 'addBook',
             updateBook: 'editBook',
             deleteBook: 'deleteBook',
-            hideModal: 'hideModal'
         }),
+        ...mapActions('selection', ['hideModal']),
         saveBook() {
+            if (this.editedBook.owner_id == null) return;
+            this.$bvModal.hide('BookModal');
             if (this.modalState === MODAL_STATE.SHOWN_UPDATE) {
                 this.updateBook(this.editedBook);
             } else if (this.modalState === MODAL_STATE.SHOWN_CREATE) {
@@ -54,20 +72,27 @@ export default {
         deleteBook(book) {
             this.deleteBook(book.id);
         },
+        setInitialOwnerId() {
+            if (this.authors.length > 0 && this.editedBook.owner_id === null) {
+                this.editedBook.owner_id = this.authors[0].id;
+            }
+        },
     },
     computed: {
+        ...mapGetters('selection', ['isShown']),
         ...mapState('authors', ['authors']),
-        ...mapState('selection', ['selection', 'modalState']),
+        ...mapState('selection', ['selected', 'modalState']),
         ...mapState('books', ['books']),
-        isModalShown() {
-            return this.modalState !== MODAL_STATE.HIDDEN;
-        },
         modalTitle() {
-            return this.modalState === MODAL_STATE.SHOWN_CREATE ? 'Add Book' : (this.bookModalVisible === MODAL_STATE.SHOWN_UPDATE ? 'Edit Book' : '');
+            return this.modalState === MODAL_STATE.SHOWN_CREATE ? 'Add Book' : (this.modalState === MODAL_STATE.SHOWN_UPDATE ? 'Edit Book' : '');
         },
     },
     mounted() {
+        this.$root.$on('bv::modal::hide', (bvEvent, modalId) => {
+            this.hideModal();
+        });
         this.fetchAuthors();
+        this.setInitialOwnerId();
     },
 };
 </script>
